@@ -7,6 +7,9 @@
 # BlueJ files
 *.ctxt
 
+# Json files
+*.json
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -21,3 +24,38 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+
+# Retrait des dossiers inutiles
+
+.settings/
+.vscode/
+backend/.mvn/
+backend/.settings/
+backend/target/
+backend/.classpath
+backend/.gitignore
+backend/HELP.md
+backend/mvnw
+backend/mvnw.cmd
+
+frontend/dist/
+frontend/node/
+frontend/node_modules/
+frontend/public/
+frontend/target/
+frontend/tests/
+frontend/.browserlistrc
+frontend/.eslintrc.js
+frontend/.gitignore
+frontend/.project
+frontend/babel.config.js
+frontend/jest.config.js
+
+
+
+
+
+
+
+
