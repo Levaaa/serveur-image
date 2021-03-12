@@ -99,4 +99,10 @@ public class ImageController {
     }
     return nodes;
   }
+
+  @RequestMapping(value = "/{id}?algorithm=contrast", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+  public ResponseEntity<?> contrast(@PathVariable("id") long id) {
+    
+  }
+
 }
