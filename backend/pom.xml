@@ -16,17 +16,32 @@
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+      <groupId>net.imglib2</groupId>
+      <artifactId>imglib2</artifactId>
+      <version>5.9.2</version>
+    	</dependency>
+    	<!-- <dependency>
+    		<groupId>io.scif</groupId>
+    		<artifactId>scifio</artifactId>
+    		<version>0.41.0</version>
+    	</dependency> -->
+    	<!-- <dependency>
+    		<groupId>net.imglib2</groupId>
+    		<artifactId>imglib2-algorithm</artifactId>
+    		<version>0.11.2</version>
+    	</dependency> -->
 	</dependencies>
 
 	<build>
@@ -61,6 +76,17 @@
 				  </execution>
 				</executions>
 			  </plugin>
+			  <plugin>
+    		    <artifactId>maven-jar-plugin</artifactId>
+    		    <version>3.2.0</version>
+    		    <configuration>
+    		      <archive>
+    		        <manifest>
+    		          <mainClass>imageProcessing.ImageController</mainClass>
+    		        </manifest>
+    		      </archive>
+    		    </configuration>
+    		  </plugin>
 		</plugins>
 	</build>
 </project>

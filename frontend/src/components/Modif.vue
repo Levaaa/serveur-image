@@ -1,5 +1,6 @@
 <template>
   <div class="edit">
+    <button class="Search__button" @click="callRestService()">Print</button>
   </div>
 </template>
 
@@ -12,16 +13,7 @@ export default {
   },
   data() {
     return {
-      show: false,
       response: [],
-      errors: [],
-      file: '',
-      images: [],
-
-      selected: {
-        name: null,
-        id: 0,
-        },
     };
   },
   mounted() {
@@ -31,10 +23,10 @@ export default {
   methods: {
     callRestService() {
       axios
-        .get(`images`)
+        .get(`images/0?algorithm=contrast`)
         .then((response) => {
           // JSON responses are automatically parsed.
-          this.response = response.data;
+          console.log(response);
         })
         .catch((e) => {
           this.errors.push(e);
@@ -42,8 +34,8 @@ export default {
     }
   }
 }
-
 </script>
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>
