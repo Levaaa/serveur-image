@@ -9,6 +9,10 @@
       </option>
     </select>
     <button class="Search__button" @click="getImage(selected)">Get image</button>
+    
+    <a href="/images/0" download="w3logo">
+      <button class="downloadButton">Download</button>
+    </a>
 
     <div class="large-12 medium-12 small-12 cell">
       <label>
@@ -19,6 +23,8 @@
     <br><br>
     <img class = "imgDisplay">
     <br>
+
+
 
     <button v-on:click="show = !show;" class="Search__button" >Display Gallery</button><br><br>
     <div class="grid-container" v-if="show">

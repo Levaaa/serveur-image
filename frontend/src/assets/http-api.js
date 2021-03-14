@@ -51,6 +51,10 @@ export default {
       });
     },
 
+    getUrl(selected) {
+      return "/images/" + selected.id;
+    },
+
     handleFileUpload(){
       this.file = this.$refs.file.files[0];
     },
