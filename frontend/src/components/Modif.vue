@@ -7,11 +7,11 @@
 
     <div class="tools">
         <h1>TOOLS</h1>
-        <input type="range" min="0" max="255" value="128" class="slider" id="myRange">
+        <input type="range" min="0" max="9" v-model="value" class="slider" v-on:input="changeImage(value)">
         <br><br>
-        <input type="range" min="0" max="255" value="128" class="slider" id="myRange">
+        <input type="range" min="0" max="255" v-model="value" class="slider" v-on:input="getValue(value)">
         <br><br>
-        <input type="range" min="0" max="255" value="128" class="slider" id="myRange">
+        <input type="range" min="0" max="255" v-model="value" class="slider" v-on:input="getValue(value)">
         <br><br>
 
     </div>
@@ -26,7 +26,7 @@
       </option>
     </select>
 
-    <!-- <img :src="getUrl(selected)"> -->
+    <img class = "imgDisplay">
   </div>
 </template>
 
@@ -36,6 +36,10 @@ import axios from "axios";
 export default {
   name: "Edit",
   data() {
+    /*
+    function getValue(value){
+      console.log(value);
+    }*/
     return {
       show: false,
       response: [],
@@ -49,10 +53,10 @@ export default {
         },
     };
   },
+
   mounted() {
     this.callRestService();
-    },
-  
+  },
   methods: {
     callRestService() {
       axios.get(`images`)
@@ -88,6 +92,25 @@ export default {
     handleFileUpload(){
       this.file = this.$refs.file.files[0];
     },
+
+    getValue(value){
+      console.log(value);
+    },
+
+    changeImage(value){
+      var imageUrl = "/images/" + value;
+      var imageEl = document.querySelector(".imgDisplay");
+
+      axios.get(imageUrl, { responseType:"blob" })
+      .then(function (response) {
+        var reader = new window.FileReader();
+        reader.readAsDataURL(response.data);
+        reader.onload = function() {
+          var imageDataUrl = reader.result;
+          imageEl.setAttribute("src", imageDataUrl);
+        }
+      });
+    },
   }
 };
 </script>
@@ -122,47 +145,6 @@ text-align: center;
 .button{
   margin-left: 2.5%;
 }
-/*
-.slidecontainer {
-  width: 90%;
-}
-
-.slider{
-    outline: 0;
-    border: 0;
-    border-radius: 500px;
-    width: 400px;
-    max-width: 100%;
-    margin: 24px 0 16px;
-    transition: box-shadow 0.2s ease-in-out;
-    overflow: hidden;
-    height: 40px;
-    -webkit-appearance: none;
-    background-color: #ddd;
-}
-
-.slider::-webkit-slider-runnable-track {
-	height: 40px;
-	-webkit-appearance: none;
-	color: #444;
-	transition: box-shadow 0.2s ease-in-out;
-}
-.slider::-webkit-slider-thumb {
-	width: 40px;
-	-webkit-appearance: none;
-	height: 40px;
-	cursor: ew-resize;
-	background: #fff;
-	box-shadow: -340px 0 0 320px #1597ff, inset 0 0 0 40px #1597ff;
-	border-radius: 50%;
-	transition: box-shadow 0.2s ease-in-out;
-	position: relative;
-}
-.slider:active::-webkit-slider-thumb {
-	background: #fff;
-	box-shadow: -340px 0 0 320px #1597ff, inset 0 0 0 3px #1597ff;
-}*/
-
 
 .slidecontainer {
   width: 90%;

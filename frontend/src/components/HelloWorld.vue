@@ -4,12 +4,11 @@
     <button class="Search__button" @click="callRestService()">Call Spring Boot REST backend</button>
 
     <select v-model="selected">
-      <option v-bind:value="{name: item.name, id: item.id}" v-bind:key="item.id" v-for="item in response">
+      <option v-for="item in response" v-bind:value="{name: item.name, id: item.id}" v-bind:key="item.id">
         {{ item.name }}
       </option>
     </select>
     <button class="Search__button" @click="getImage(selected)">Get image</button>
-    <button>Get image</button>
     
 
     <a :href="getUrl(selected)" :download="selected.name">
