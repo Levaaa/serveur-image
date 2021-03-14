@@ -15,9 +15,7 @@
       <button class="downloadButton">Download</button>
     </a>
 
-    <a :href="getUrl(selected)" >
-      <button @formmethod="DELETE">Delete</button>
-    </a>
+    <button @formmethod="DELETE" @click="deleteImage(selected); callRestService();" >Delete</button>
     
     <div class="large-12 medium-12 small-12 cell">
       <label>

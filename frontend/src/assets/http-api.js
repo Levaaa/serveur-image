@@ -73,6 +73,12 @@ export default {
         console.log(error);
         console.log('FAILURE!!');
       });
-    }
+    },
+
+    deleteImage(selected){
+      var imageUrl = "/images/" + selected.id;
+      axios.delete(imageUrl);
+    },
+
   }
 };

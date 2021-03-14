@@ -36,10 +36,6 @@ import axios from "axios";
 export default {
   name: "Edit",
   data() {
-    /*
-    function getValue(value){
-      console.log(value);
-    }*/
     return {
       show: false,
       response: [],
