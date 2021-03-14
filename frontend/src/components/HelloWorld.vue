@@ -9,11 +9,17 @@
       </option>
     </select>
     <button class="Search__button" @click="getImage(selected)">Get image</button>
+    <button>Get image</button>
     
-    <a href="/images/0" download="w3logo">
+
+    <a :href="getUrl(selected)" :download="selected.name">
       <button class="downloadButton">Download</button>
     </a>
 
+    <a :href="getUrl(selected)" >
+      <button @formmethod="DELETE">Delete</button>
+    </a>
+    
     <div class="large-12 medium-12 small-12 cell">
       <label>
         <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
@@ -23,8 +29,6 @@
     <br><br>
     <img class = "imgDisplay">
     <br>
-
-
 
     <button v-on:click="show = !show;" class="Search__button" >Display Gallery</button><br><br>
     <div class="grid-container" v-if="show">
@@ -38,7 +42,8 @@
   </div>
 </template>
 
-<script src="../assets/http-api.js"></script>
+<script src="../assets/http-api.js">
+</script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>

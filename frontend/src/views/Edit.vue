@@ -1,6 +1,5 @@
 <template>
   <div class="edit">
-    <img alt="Vue logo" src="../assets/logo.png">
     <Modif/>
   </div>
 </template>
