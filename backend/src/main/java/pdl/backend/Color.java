@@ -1,9 +1,9 @@
 // package functions;
 package pdl.backend;
 
-// import io.scif.img.ImgIOException;
-// import io.scif.img.ImgOpener;
-// import io.scif.img.ImgSaver;
+import io.scif.img.ImgIOException;
+import io.scif.img.ImgOpener;
+import io.scif.img.ImgSaver;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
@@ -15,6 +15,7 @@ import net.imglib2.view.IntervalView;
 import net.imglib2.loops.LoopBuilder;
 import java.io.File;
 import java.util.Arrays;
+//import io.scif.img.SCIFIOImgPlus;
 
 public class Color {
 	 /*

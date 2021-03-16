@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
+import io.scif.FormatException;
 // a faire le tri
 import io.scif.img.SCIFIOImgPlus;
 
@@ -67,8 +67,7 @@ public class ImageController {
 
     if (image.isPresent()) {
         InputStream inputStream = new ByteArrayInputStream(image.get().getData());
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
-            .body(new InputStreamResource(inputStream));
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
     }
     return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
   }
@@ -122,53 +121,65 @@ public class ImageController {
     return nodes;
   }
 
+  
   @RequestMapping(value = "images/{id}?algorithm=contrast", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-  public ResponseEntity<?> contrast(@PathVariable("id") long id) {
+  public ResponseEntity<?> contrast(@PathVariable("id") long id) throws IOException, FormatException {
     Optional<Image> image = imageDao.retrieve(id); 
-
+    
     if (!image.isPresent()) {
       return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
     }
+    try{
+      SCIFIOImgPlus<UnsignedByteType> input = ImageConverter.imageFromJPEGBytes(image.get().getData());
+      Color.contrast1(input, 120, 121);
+      
+      image.get().setData(ImageConverter.imageToJPEGBytes(input));
+      
+      // Problème sûr dans les 2 lignes en dessous et très probablement juste dans celle juste en dessous
+      InputStream inputStream = new ByteArrayInputStream(image.get().getData());  
+      return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
 
-    SCIFIOImgPlus<UnsignedByteType> input = ImageConverter.imageFromJPEGBytes(image.get().getData());
-    Color.contrast1(input, 0, 255);
+      
+    } catch(Exception e){
+      return new ResponseEntity<>("Problem in the execution of the function.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     
-    image.setData(ImageConverter.imageToJPEGBytes(input));
+  }
 
+  //pour debug
+  @RequestMapping(value = "/images/{id}/print", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+  @ResponseBody
+  public ArrayNode print(@PathVariable("id") long id) throws IOException, FormatException {
 
+    ArrayNode nodes = mapper.createArrayNode(); 
+    ObjectNode node = mapper.createObjectNode();
+
+    Optional<Image> image = imageDao.retrieve(id);
+    SCIFIOImgPlus<UnsignedByteType> input = ImageConverter.imageFromJPEGBytes(image.get().getData());
+    
+
+    final RandomAccess<UnsignedByteType> r = input.randomAccess();
+    r.setPosition(0, 0);
+    r.setPosition(0, 1);
+    r.setPosition(0, 2);
+		//node.put("val avant", r.get().get());
+
+    Color.luminosity(input, 100);
+
+    image.get().setData(ImageConverter.imageToJPEGBytes(input));
+      
     InputStream inputStream = new ByteArrayInputStream(image.get().getData());
-    return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
-        .body(new InputStreamResource(inputStream));
+
+    int b;
+    String error = "";
+    while ( ( b = inputStream.read() ) != -1 )
+      {
+        char c = (char)b;         
+        error.concat(""+c); //This prints out content that is unreadable.
+      }
+
+    node.put("val", error);
+    nodes.add(node);
+    return nodes;
   }
-
-  public void testDefaultASCII(byte[] data) {
-    // character set used in DefaultASCII, could be updated if necessary
-    // final String CHARS = "#O*o+-,. ";
-    // final int len = CHARS.length();
-    // final int width = 10;
-    // final int offset = 47;
-    // final byte[] array = new byte[width * len];
-    // for (int i = 0; i < len; i++) {
-    //   for (int j = 0; j < width; j++) {
-    //     array[i * width + j] = (byte) (offset + i * width + j);
-    //   }
-    // }
-    System.out.println(data);
-
-    //final Img<UnsignedByteType> img = ArrayImgs.unsignedBytes(data, width, len);
-    final Img<UnsignedByteType> img = ArrayImgs.unsignedBytes(data, data.length);
-
-    System.out.println(img);
-
-    final RandomAccess<UnsignedByteType> r = img.randomAccess();
-
-    // final String ascii = (String) ops.run(DefaultASCII.class, img);
-    // for (int i = 0; i < len; i++) {
-    //   for (int j = 0; j < width; j++) {
-    //     assertTrue(ascii.charAt(i * (width + 1) + j) == CHARS.charAt(i));
-    //   }
-    //   assertTrue(ascii.charAt(i * (width + 1) + width) == '\n');
-    // }
-  }
-
 }

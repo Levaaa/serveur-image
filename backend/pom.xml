@@ -17,6 +17,14 @@
 		<java.version>11</java.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/groups/public</url>
+		</repository>
+	</repositories>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -33,19 +41,22 @@
 			<version>5.9.2</version>
     	</dependency>
 
-		<!-- C'est un truc comme ça mais ça marche pas 
-		<dependency>
+		<!-- C'est un truc comme ça mais ça marche pas -->
+
+		<!-- <dependency>
 		   <groupId>io.scif</groupId>
 		   <artifactId>pom-scifio</artifactId>
 		   <version>13.0.0</version>
-		 </dependency>
-			 -->
+		 </dependency> -->
 
-    	<!-- <dependency>
-    		<groupId>io.scif</groupId>
-    		<artifactId>scifio</artifactId>
-    		<version>0.41.0</version>
-    	</dependency> -->
+		<!-- https://mvnrepository.com/artifact/io.scif/scifio -->
+		 <dependency>
+		    <groupId>io.scif</groupId>
+		    <artifactId>scifio</artifactId>
+		    <version>0.41.0</version>
+			<type>jar</type>
+		</dependency>
+
     	<!-- <dependency>
     		<groupId>net.imglib2</groupId>
     		<artifactId>imglib2-algorithm</artifactId>

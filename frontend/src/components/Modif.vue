@@ -25,8 +25,11 @@
         {{ item.name }}
       </option>
     </select>
+    <br>
+    <button class="Search__button" @click="contrast(selected)">Contrast</button>
 
-    <img class = "imgDisplay">
+    <!-- <img class = "imgDisplay"> -->
+    <img class = "result">
   </div>
 </template>
 
@@ -59,7 +62,6 @@ export default {
         .then((response) => {
           // JSON responses are automatically parsed.
           this.response = response.data;
-          console.log(this.response.length);
         })
         .catch((e) => {
           this.errors.push(e);
@@ -96,6 +98,21 @@ export default {
     changeImage(value){
       var imageUrl = "/images/" + value;
       var imageEl = document.querySelector(".imgDisplay");
+
+      axios.get(imageUrl, { responseType:"blob" })
+      .then(function (response) {
+        var reader = new window.FileReader();
+        reader.readAsDataURL(response.data);
+        reader.onload = function() {
+          var imageDataUrl = reader.result;
+          imageEl.setAttribute("src", imageDataUrl);
+        }
+      });
+    },
+
+    contrast(selected){
+      var imageUrl = "/images/" + selected.id + "?algorithm=contrast";
+      var imageEl = document.querySelector(".result");
 
       axios.get(imageUrl, { responseType:"blob" })
       .then(function (response) {
