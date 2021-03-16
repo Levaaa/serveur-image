@@ -23,6 +23,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+// a faire le tri
+import io.scif.img.SCIFIOImgPlus;
+
+
+
 
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
@@ -39,6 +44,7 @@ import net.imglib2.view.IntervalView;
 import java.util.Arrays;
 import net.imglib2.loops.LoopBuilder;
 import net.imglib2.img.array.ArrayImgs;
+
 
 @RestController
 public class ImageController {
@@ -120,26 +126,19 @@ public class ImageController {
   public ResponseEntity<?> contrast(@PathVariable("id") long id) {
     Optional<Image> image = imageDao.retrieve(id); 
 
-    System.out.println("salut");
-
     if (!image.isPresent()) {
       return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
     }
-    InputStream inputStream = new ByteArrayInputStream(image.get().getData());
 
-    testDefaultASCII(image.get().getData());
+    SCIFIOImgPlus<UnsignedByteType> input = ImageConverter.imageFromJPEGBytes(image.get().getData());
+    Color.contrast1(input, 0, 255);
     
-    //récupérer à partir de inputStream le input de RGB.java
-    /*
-    
-    input;
-    RGB.contrast(input)
-    InputStream inputOut
-    imageDao.create(new Image(file.getOriginalFilename(), file.getBytes()));
-    return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputOut));
-    
-    */
-    return new ResponseEntity<>("test", HttpStatus.OK);
+    image.setData(ImageConverter.imageToJPEGBytes(input));
+
+
+    InputStream inputStream = new ByteArrayInputStream(image.get().getData());
+    return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
+        .body(new InputStreamResource(inputStream));
   }
 
   public void testDefaultASCII(byte[] data) {
