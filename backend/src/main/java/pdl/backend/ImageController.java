@@ -26,52 +26,66 @@ import io.scif.FormatException;
 // a faire le tri
 import io.scif.img.SCIFIOImgPlus;
 
-
-
-
-import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
-import net.imglib2.img.Img;
-import net.imglib2.img.array.ArrayImgFactory;
-// import io.scif.img.ImgIOException;
-// import io.scif.img.ImgOpener;
-// import io.scif.img.ImgSaver;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
-import net.imglib2.exception.IncompatibleTypeException;
-import java.io.File;
-import net.imglib2.view.Views;
-import net.imglib2.view.IntervalView;
-import java.util.Arrays;
-import net.imglib2.loops.LoopBuilder;
-import net.imglib2.img.array.ArrayImgs;
 
 
 @RestController
 public class ImageController {
-
+  
   @Autowired
   private ObjectMapper mapper;
-
+  
   private final ImageDao imageDao;
-
+  
   @Autowired
   public ImageController(ImageDao imageDao) {
     this.imageDao = imageDao;
   }
-
-
+  
   @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-  public ResponseEntity<?> getImage(@PathVariable("id") long id) {
-
-    Optional<Image> image = imageDao.retrieve(id);    
-
-    if (image.isPresent()) {
-        InputStream inputStream = new ByteArrayInputStream(image.get().getData());
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+  public ResponseEntity<?> getImage(@PathVariable("id") long id,  @RequestParam(value = "algorithm", required = false, defaultValue = "") String algorithm) {
+    Optional<Image> image = imageDao.retrieve(id); 
+    if (!image.isPresent()) {
+      return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
     }
-    return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
+    if (!algorithm.equals("")){
+      try{
+          SCIFIOImgPlus<UnsignedByteType> input = ImageConverter.imageFromJPEGBytes(image.get().getData());
+          Color.contrast1(input, 120, 121);
+
+          image.get().setData(ImageConverter.imageToJPEGBytes(input));
+      } catch(Exception e){
+        return new ResponseEntity<>("Problem in the execution of the function.", HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+    InputStream inputStream = new ByteArrayInputStream(image.get().getData());
+    return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
   }
 
+  /*
+  @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+  public ResponseEntity<?> function(@PathVariable("id") long id, @RequestParam(value = "algorithm") String algorithm) {    
+    Optional<Image> image = imageDao.retrieve(id); 
+    if (!image.isPresent()) {
+      return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
+    }
+
+    try{
+      SCIFIOImgPlus<UnsignedByteType> input = ImageConverter.imageFromJPEGBytes(image.get().getData());
+      Color.contrast1(input, 120, 121);
+      
+      image.get().setData(ImageConverter.imageToJPEGBytes(input));
+      
+      InputStream inputStream = new ByteArrayInputStream(image.get().getData());
+      return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
+  
+    } catch(Exception e){
+      return new ResponseEntity<>("Problem in the execution of the function.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  */
+  
   @RequestMapping(value = "/images/{id}", method = RequestMethod.DELETE)
   public ResponseEntity<?> deleteImage(@PathVariable("id") long id) {
 
@@ -121,39 +135,19 @@ public class ImageController {
     return nodes;
   }
 
-  
-  @RequestMapping(value = "images/{id}?algorithm=contrast", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-  public ResponseEntity<?> contrast(@PathVariable("id") long id) throws IOException, FormatException {
-    Optional<Image> image = imageDao.retrieve(id); 
-    
-    if (!image.isPresent()) {
-      return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
-    }
-    try{
-      SCIFIOImgPlus<UnsignedByteType> input = ImageConverter.imageFromJPEGBytes(image.get().getData());
-      Color.contrast1(input, 120, 121);
-      
-      image.get().setData(ImageConverter.imageToJPEGBytes(input));
-      
-      // Problème sûr dans les 2 lignes en dessous et très probablement juste dans celle juste en dessous
-      InputStream inputStream = new ByteArrayInputStream(image.get().getData());  
-      return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
 
-      
-    } catch(Exception e){
-      return new ResponseEntity<>("Problem in the execution of the function.", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    
-  }
 
   //pour debug
   @RequestMapping(value = "/images/{id}/print", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
   @ResponseBody
-  public ArrayNode print(@PathVariable("id") long id) throws IOException, FormatException {
+  public ArrayNode print(@PathVariable("id") long id,  @RequestParam String algorithm) throws IOException, FormatException {
 
+
+    
     ArrayNode nodes = mapper.createArrayNode(); 
     ObjectNode node = mapper.createObjectNode();
 
+    /*
     Optional<Image> image = imageDao.retrieve(id);
     SCIFIOImgPlus<UnsignedByteType> input = ImageConverter.imageFromJPEGBytes(image.get().getData());
     
@@ -176,9 +170,10 @@ public class ImageController {
       {
         char c = (char)b;         
         error.concat(""+c); //This prints out content that is unreadable.
-      }
+      }*/
 
-    node.put("val", error);
+      
+    node.put("val", algorithm);
     nodes.add(node);
     return nodes;
   }
