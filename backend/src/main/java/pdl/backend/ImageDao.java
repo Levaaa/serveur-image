@@ -40,8 +40,9 @@ public class ImageDao implements Dao<Image> {
   }
 
   @Override
-  public void create(final Image img) {
+  public long create(final Image img) {
     images.put(img.getId(),img);
+    return img.getId();
     }
 
   @Override

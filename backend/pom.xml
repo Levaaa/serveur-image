@@ -40,28 +40,12 @@
 			<artifactId>imglib2</artifactId>
 			<version>5.9.2</version>
     	</dependency>
-
-		<!-- C'est un truc comme ça mais ça marche pas -->
-
-		<!-- <dependency>
-		   <groupId>io.scif</groupId>
-		   <artifactId>pom-scifio</artifactId>
-		   <version>13.0.0</version>
-		 </dependency> -->
-
-		<!-- https://mvnrepository.com/artifact/io.scif/scifio -->
 		 <dependency>
 		    <groupId>io.scif</groupId>
 		    <artifactId>scifio</artifactId>
 		    <version>0.41.0</version>
 			<type>jar</type>
 		</dependency>
-
-    	<!-- <dependency>
-    		<groupId>net.imglib2</groupId>
-    		<artifactId>imglib2-algorithm</artifactId>
-    		<version>0.11.2</version>
-    	</dependency> -->
 	</dependencies>
 
 	<build>

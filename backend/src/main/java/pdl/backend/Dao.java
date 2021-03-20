@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface Dao<T> {
   
-  void create(final T t);
+  long create(final T t);
 
   Optional<T> retrieve(final long id);
 

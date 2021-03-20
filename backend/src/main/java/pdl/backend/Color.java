@@ -21,7 +21,7 @@ public class Color {
 	 /*
 	 	Question 2 :
 	 */
-	public static void luminosity(Img<UnsignedByteType> img, int delta){
+	public static void brightness(Img<UnsignedByteType> img, int delta){
 		final Cursor<UnsignedByteType> cursor = img.localizingCursor();
 
         while (cursor.hasNext()){

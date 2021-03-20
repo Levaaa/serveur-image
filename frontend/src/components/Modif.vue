@@ -16,18 +16,30 @@
 
     </div>
 
-    <input type="button" class="button" value="save">
-    <input type="button" class="button" value="download">
-    <input type="button" class="button" value="save image">
-    <input type="button" class="button" value="reset">
-    <select name="selecteurImage" id="sldksdl" v-model="selected">
-      <option v-bind:value="{name: item.name, id: item.id}" v-bind:key="item.id" v-for="item in response">
-        {{ item.name }}
-      </option>
-    </select>
-    <br>
-    <button class="Search__button" @click="contrast(selected)">Contrast</button>
+    <div>
+      <input type="button" class="button" value="save">
+      <input type="button" class="button" value="download">
+      <input type="button" class="button" value="reset">
 
+      <select name="selecteurImage" class="button" v-model="selected">
+        <option v-bind:value="{name: item.name, id: item.id}" v-bind:key="item.id" v-for="item in response">
+          {{ item.name }}
+        </option>
+      </select>
+
+      <select name="effets" class="button" id="pet-select">
+        <option value="contrast">contrast</option>
+        <option value="brightness">brightness</option>
+        <option value="equalizer">equalizer</option>
+        <option value="toGrey">toGrey</option>
+        <option value="coloration">coloration</option>
+      </select>
+    </div>
+
+
+    <br>
+
+    <button class="Search__button" @click="contrast(selected)">Apply effect</button>
     <!-- <img class = "imgDisplay"> -->
     <img class = "result">
   </div>
@@ -138,14 +150,14 @@ export default {
   max-width: 45%; 
   max-height: 50%;
 
-  border: 12px solid red;
+  border: 12px solid rgb(42, 42, 42);
   margin: 5%;
   float: left;
 }
 
 .tools {
   width: 30%; 
-  height: 50%;
+  height: 70%;
   border: 12px solid rgb(140, 0, 255);
   margin: 5%;
   float: right;
@@ -157,6 +169,7 @@ text-align: center;
 
 .button{
   margin-left: 2.5%;
+  margin-right: 2,5%;
 }
 
 .slidecontainer {

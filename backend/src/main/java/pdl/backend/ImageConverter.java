@@ -46,5 +46,14 @@ public class ImageConverter {
     c.dispose();
     return imageInByte;
   }
+/*
+  ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+ImageIO.write(bufferedImage , "jpg", byteArrayOutputStream);
+byte[] imageInByte = baos.toByteArray();
+return ResponseEntity.status(HttpStatus.OK)
+            .header(HttpHeaders.CONTENT_DISPOSITION, "filename=\"image.jpg"\")
+            .contentType(MediaType.IMAGE_JPEG)
+            .body(imageInByte);
 
+*/
 }
