@@ -5,11 +5,13 @@ public class Image {
   private Long id;
   private String name;
   private byte[] data;
+  private String type;
 
-  public Image(final String name, final byte[] data) {
+  public Image(final String name, final byte[] data, String type) {
     id = count++;
     this.name = name;
     this.data = data;
+    this.type = type;
   }
 
   public long getId() {
@@ -30,5 +32,9 @@ public class Image {
 
   public void setData(byte[] data) {
     this.data = data;
+  }
+
+  public String getType() {
+    return type;
   }
 }

@@ -22,7 +22,7 @@ public class ImageDao implements Dao<Image> {
     byte[] fileContent;
     try {
       fileContent = Files.readAllBytes(imgFile.getFile().toPath());
-      Image img = new Image("logo.jpg", fileContent);
+      Image img = new Image("logo.jpg", fileContent, "image/jpeg");
       images.put(img.getId(), img);
     } catch (final IOException e) {
       e.printStackTrace();
@@ -41,7 +41,7 @@ public class ImageDao implements Dao<Image> {
 
   @Override
   public long create(final Image img) {
-    images.put(img.getId(),img);
+    images.put(img.getId(), img);
     return img.getId();
     }
 

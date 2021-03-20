@@ -6,13 +6,20 @@
     </div>
 
     <div class="tools">
-        <h1>TOOLS</h1>
-        <input type="range" min="0" max="9" v-model="value" class="slider" v-on:input="changeImage(value)">
-        <br><br>
-        <input type="range" min="0" max="255" v-model="value" class="slider" v-on:input="getValue(value)">
-        <br><br>
-        <input type="range" min="0" max="255" v-model="value" class="slider" v-on:input="getValue(value)">
-        <br><br>
+      <h1>TOOLS</h1>
+      <div v-if="effect.name === 'brightness' || effect.name === 'coloration'">
+        <input type="range" :min="effect.min" :max="effect.max" v-model="value" class="slider" v-on:change="effect.param = value; applyEffect(selected, effect)">
+      </div>
+      <div v-else>
+        <b v-if="errorMessage" style="color:red">
+          Selectionnez votre effet !
+          <br><br>
+        </b>
+        <button class="Search__button" @click="applyEffect(selected, effect)">Apply effect</button>
+      </div>
+      
+      <br><br>
+
 
     </div>
 
@@ -27,19 +34,16 @@
         </option>
       </select>
 
-      <select name="effets" class="button" id="pet-select">
-        <option value="contrast">contrast</option>
-        <option value="brightness">brightness</option>
-        <option value="equalizer">equalizer</option>
-        <option value="toGrey">toGrey</option>
-        <option value="coloration">coloration</option>
+      <select name="selecteurEffet" class="button" v-model="effect">
+        <option v-bind:value="{name: item.name, param: item.param, min: item.min, max: item.max}" v-bind:key="item" v-for="item in name">
+          {{ item.name }}
+        </option>
       </select>
     </div>
 
 
     <br>
 
-    <button class="Search__button" @click="contrast(selected)">Apply effect</button>
     <!-- <img class = "imgDisplay"> -->
     <img class = "result">
   </div>
@@ -61,7 +65,24 @@ export default {
       selected: {
         name: null,
         id: 0,
-        },
+      },
+
+      effect: {
+        name: null,
+        param: null,
+        min: null,
+        max: null,
+      },
+
+      name: [
+        {name: "contrast"},
+        {name: "brightness", param: 0, min: -255, max: 255},
+        {name: "equalizer"},
+        {name: "toGrey"},
+        {name: "coloration", param: 0, min: 0, max: 360}
+        ],
+
+      errorMessage: false,
     };
   },
 
@@ -81,7 +102,7 @@ export default {
     },
 
     getImage(selected) {
-      var imageUrl = "/images/" + selected.id;
+      var imageUrl = "/images/" + selected.id;      
       var imageEl = document.querySelector(".imgDisplay");
 
       axios.get(imageUrl, { responseType:"blob" })
@@ -107,24 +128,18 @@ export default {
       console.log(value);
     },
 
-    changeImage(value){
-      var imageUrl = "/images/" + value;
-      var imageEl = document.querySelector(".imgDisplay");
-
-      axios.get(imageUrl, { responseType:"blob" })
-      .then(function (response) {
-        var reader = new window.FileReader();
-        reader.readAsDataURL(response.data);
-        reader.onload = function() {
-          var imageDataUrl = reader.result;
-          imageEl.setAttribute("src", imageDataUrl);
-        }
-      });
-    },
-
-    contrast(selected){
-      var imageUrl = "/images/" + selected.id + "?algorithm=contrast";
-      var imageEl = document.querySelector(".result");
+    applyEffect(selected, effect){
+      if(effect.name == null){
+        this.errorMessage = true;
+        return;
+      } else {
+        this.errorMessage = false;
+      }
+      var imageUrl = "/images/" + selected.id + "?algorithm=" + effect.name;
+      if(effect.param != null){
+        imageUrl += "&p1=" + effect.param;
+      }
+      var imageEl = document.querySelector(".photo");
 
       axios.get(imageUrl, { responseType:"blob" })
       .then(function (response) {

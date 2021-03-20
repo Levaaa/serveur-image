@@ -67,7 +67,7 @@ public class ImageController {
         }
       }
       if(!found){
-        long modifiedId = imageDao.create(new Image(algorithm + "_" + image.get().getName(), image.get().getData()));
+        long modifiedId = imageDao.create(new Image(algorithm + "_" + image.get().getName(), image.get().getData(), image.get().getType()));
         modifiedImage = imageDao.retrieve(modifiedId);
       }
       try{
@@ -120,29 +120,6 @@ public class ImageController {
     }
     return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
   }
-
-  /*
-  @RequestMapping(value = "/images/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-  public ResponseEntity<?> function(@PathVariable("id") long id, @RequestParam(value = "algorithm") String algorithm) {    
-    Optional<Image> image = imageDao.retrieve(id); 
-    if (!image.isPresent()) {
-      return new ResponseEntity<>("Image id=" + id + " not found.", HttpStatus.NOT_FOUND);
-    }
-
-    try{
-      SCIFIOImgPlus<UnsignedByteType> input = ImageConverter.imageFromJPEGBytes(image.get().getData());
-      Color.contrast1(input, 120, 121);
-      
-      image.get().setData(ImageConverter.imageToJPEGBytes(input));
-      
-      InputStream inputStream = new ByteArrayInputStream(image.get().getData());
-      return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new InputStreamResource(inputStream));
-  
-    } catch(Exception e){
-      return new ResponseEntity<>("Problem in the execution of the function.", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-  */
   
   @RequestMapping(value = "/images/{id}", method = RequestMethod.DELETE)
   public ResponseEntity<?> deleteImage(@PathVariable("id") long id) {
@@ -170,7 +147,7 @@ public class ImageController {
     }
 
     try {
-      imageDao.create(new Image(file.getOriginalFilename(), file.getBytes()));
+      imageDao.create(new Image(file.getOriginalFilename(), file.getBytes(), contentType));
     } catch (IOException e) {
       return new ResponseEntity<>("Failure to read file", HttpStatus.NO_CONTENT);
     }
@@ -180,14 +157,29 @@ public class ImageController {
 
   @RequestMapping(value = "/images", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
   @ResponseBody
-  public ArrayNode getImageList() {
+  public ArrayNode getImageList(){
     ArrayNode nodes = mapper.createArrayNode();
-    List<Image> imgList = imageDao.retrieveAll(); 
+    List<Image> imgList = imageDao.retrieveAll();
     
     for (Image image : imgList) {
       ObjectNode node = mapper.createObjectNode();
+      SCIFIOImgPlus<UnsignedByteType> input;
+      try{
+        input = ImageConverter.imageFromJPEGBytes(image.getData());
+      } catch (Exception e) {
+        return null;
+      }
+      final int iw = (int) input.max(0) + 1;
+		  final int ih = (int) input.max(1) + 1;
+		  final int ic = (int) input.max(2) + 1;
+      String size = iw + "*" + ih + "*" + ic;
+
+      
       node.put("name", image.getName());
-      node.put("id", image.getId());
+      node.put("id", image.getId());  
+      node.put("type", image.getType());
+      node.put("size", size);
+
       nodes.add(node);
     }
     return nodes;
