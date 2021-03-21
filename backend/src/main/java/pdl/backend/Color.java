@@ -15,7 +15,6 @@ import net.imglib2.view.IntervalView;
 import net.imglib2.loops.LoopBuilder;
 import java.io.File;
 import java.util.Arrays;
-//import io.scif.img.SCIFIOImgPlus;
 
 public class Color {
 	 /*
@@ -372,5 +371,38 @@ public class Color {
         r.setPosition(y, 1);
 		r.setPosition(2, 2);
 		return r.get().get();
+	}
+
+	public static void meanFilterWithBorders(final Img<UnsignedByteType> input, int size) {
+		final RandomAccess<UnsignedByteType> rIn = input.randomAccess();
+
+		final int iw = (int) input.max(0);
+        final int ih = (int) input.max(1);
+		final int ic = (int) input.max(2);
+		int res;
+		int range = size/2;
+
+		final IntervalView<UnsignedByteType> expandedView = Views.expandZero(input, range, range, 0);
+		final RandomAccess<UnsignedByteType> rExp = expandedView.randomAccess();
+		for(int c = 0; c < ic; c++){
+			for (int x = 0; x < iw; ++x) {
+				for (int y = 0; y < ih; ++y) {
+					res = 0;
+					for(int u = -range; u <= range; u++){
+						for(int v = -range; v <= range; v++){
+							rExp.setPosition(c, 2);
+							rExp.setPosition(x + u, 0);
+							rExp.setPosition(y + v, 1);
+							res += rExp.get().get();
+						}
+					}
+					res = res/(size * size);
+					rIn.setPosition(x, 0);
+					rIn.setPosition(y, 1);
+					rIn.setPosition(c, 2);
+					rIn.get().set(res);
+				}
+			}
+		}
 	}
 }
