@@ -173,12 +173,28 @@ public class ImageController {
 		  final int ih = (int) input.max(1) + 1;
 		  final int ic = (int) input.max(2) + 1;
       String size = iw + "*" + ih + "*" + ic;
-
       
       node.put("name", image.getName());
       node.put("id", image.getId());  
       node.put("type", image.getType());
       node.put("size", size);
+
+      nodes.add(node);
+    }
+    return nodes;
+  }
+
+  @RequestMapping(value = "/images/get", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+  @ResponseBody
+  public ArrayNode getAllImages(){
+    ArrayNode nodes = mapper.createArrayNode();
+    List<Image> imgList = imageDao.retrieveAll();
+    
+    for (Image image : imgList) {
+      ObjectNode node = mapper.createObjectNode();
+      
+      node.put("name", image.getName());
+      node.put("id", image.getId());
 
       nodes.add(node);
     }

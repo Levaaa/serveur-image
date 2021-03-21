@@ -44,23 +44,10 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
 a {
   color: #42b983;
 }
-.test{
-  position: relative;
-}
+
 .gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -100,12 +87,6 @@ body {
   transition: all .25s ease-in-out;
   
 }
-p {
-  margin: 5px 0;
-  padding: 0;
-  text-align: center;
-  font-style: italic;
-  }
 
 
 </style>

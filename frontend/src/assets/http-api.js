@@ -25,7 +25,7 @@ export default {
   methods: {
     callRestService() {
       axios
-        .get(`images`)
+        .get(`images/get`)
         .then((response) => {
           // JSON responses are automatically parsed.
           this.response = response.data;
