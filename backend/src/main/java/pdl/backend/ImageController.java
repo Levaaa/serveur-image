@@ -104,6 +104,17 @@ public class ImageController {
 
               Color.coloration(input, param);
               break;
+            case "meanFilter":
+              param = Integer.parseInt(p1);
+              if(param < 0 && param > 15)
+                return new ResponseEntity<>("Unvalid parameter.", HttpStatus.BAD_REQUEST);
+              Color.meanFilterWithBorders(input, param);
+              break;
+            case "edges":
+              if(!p1.equals("problem"))
+                return new ResponseEntity<>("Unwanted parameter.", HttpStatus.BAD_REQUEST);
+              Color.edges(input);
+              break;
             default :
               return new ResponseEntity<>("Unknown algorithm.", HttpStatus.BAD_REQUEST);
           }

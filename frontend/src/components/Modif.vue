@@ -8,8 +8,9 @@
 
     <div class="tools">
       <h1>TOOLS</h1>
-      <div v-if="effect.name === 'brightness' || effect.name === 'coloration'">
-        <input type="range" :min="effect.min" :max="effect.max" v-model="value" class="slider" v-on:change="effect.param = value; applyEffect(selected, effect)">
+      <div v-if="effect.name === 'brightness' || effect.name === 'coloration' || effect.name === 'meanFilter'">
+        <input type="range" :min="effect.min" :max="effect.max" :step="effect.step" v-model="value" 
+        class="slider" v-on:change="applyEffect(selected, effect)" v-on:input="effect.param = value">
         <br>
         {{ effect.param }}
       </div>
@@ -36,7 +37,8 @@
 
       <select name="selecteurEffet" class="button" v-model="effect">
       <!-- <select name="selecteurEffet" class="button" v-model="effect" @click="applyEffect(selected, effect); callRestService()"> -->
-        <option v-bind:value="{name: item.name, param: item.param, min: item.min, max: item.max}" v-bind:key="item" v-for="item in name">
+        <option v-bind:value="{name: item.name, param: item.param, min: item.min, max: item.max, step: item.step}" 
+        v-bind:key="item" v-for="item in name">
           {{ item.name }}
         </option>
       </select>
@@ -71,14 +73,17 @@ export default {
         param: null,
         min: null,
         max: null,
+        step: null,
       },
 
       name: [
         {name: "contrast"},
-        {name: "brightness", param: 0, min: -255, max: 255},
+        {name: "brightness", param: 0, min: -255, max: 255, step: 1},
         {name: "equalizer"},
         {name: "toGrey"},
-        {name: "coloration", param: 0, min: 0, max: 360}
+        {name: "coloration", param: 180, min: 0, max: 360, step: 1},
+        {name: "meanFilter", param: 7, min: 1, max: 15, step: 2},
+        {name : "edges"}
         ],
 
     };
@@ -152,6 +157,7 @@ export default {
         }
       });
     },
+
     exchangeImages(){
       var bigImage = document.querySelector(".photo");
       var smallImage = document.querySelector(".initialPhoto");
