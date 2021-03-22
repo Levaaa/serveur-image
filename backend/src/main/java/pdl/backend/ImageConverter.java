@@ -46,6 +46,7 @@ public class ImageConverter {
     c.dispose();
     return imageInByte;
   }
+  
 /*
   ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 ImageIO.write(bufferedImage , "jpg", byteArrayOutputStream);
