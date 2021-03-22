@@ -82,7 +82,7 @@ public class ImageController {
               break;
             case "brightness":
               param = Integer.parseInt(p1);
-              if(param < 0 && param > 255)
+              if(param < 0 || param > 255)
                 return new ResponseEntity<>("Unvalid parameter.", HttpStatus.BAD_REQUEST);
               
               Color.brightness(input, param);
@@ -99,14 +99,14 @@ public class ImageController {
               break;
             case "coloration":
               param = Integer.parseInt(p1);
-              if(param < 0 && param > 360)
+              if(param < 0 || param > 360)
                 return new ResponseEntity<>("Unvalid parameter.", HttpStatus.BAD_REQUEST);
 
               Color.coloration(input, param);
               break;
             case "meanFilter":
               param = Integer.parseInt(p1);
-              if(param < 0 && param > 15)
+              if(param < 0 || param > 15)
                 return new ResponseEntity<>("Unvalid parameter.", HttpStatus.BAD_REQUEST);
               Color.meanFilterWithBorders(input, param);
               break;

@@ -50,7 +50,7 @@ public class ImageControllerTests {
 	@Test
 	@Order(2)
 	public void getImageShouldReturnNotFound() throws Exception {
-		this.mockMvc.perform(get("/fail")).andExpect(status().isNotFound());
+		this.mockMvc.perform(get("/images/50000")).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -73,12 +73,6 @@ public class ImageControllerTests {
 
 	@Test
 	@Order(6)
-	public void deleteImageShouldReturnSuccess() throws Exception {
-		this.mockMvc.perform(delete("/images/0")).andExpect(status().isOk());
-	}
-
-	@Test
-	@Order(7)
 	public void createImageShouldReturnSuccess() throws Exception {
 		final ClassPathResource imgFile = new ClassPathResource("test.jpg");
     	byte[] fileContent = Files.readAllBytes(imgFile.getFile().toPath());
@@ -88,7 +82,7 @@ public class ImageControllerTests {
 	}
 
 	@Test
-	@Order(8)
+	@Order(7)
 	public void createImageShouldReturnUnsupportedMediaType() throws Exception {
 		final ClassPathResource imgFile = new ClassPathResource("test.png");
     	byte[] fileContent = Files.readAllBytes(imgFile.getFile().toPath());
@@ -96,4 +90,51 @@ public class ImageControllerTests {
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart("/images").file(file);
 		this.mockMvc.perform(builder).andExpect(status().isUnsupportedMediaType());
 	}
+
+	@Test
+	@Order(8)
+	// public void getImageWithAlgorithmWithoutArgShouldReturnSuccess() throws Exception {
+	// 	this.mockMvc.perform(get("/images/0?algorithm=contrast")).andExpect(status().isOk());
+	// }
+	public void getImageWithAlgorithmWithoutArgShouldReturnSuccess() throws Exception {
+		this.mockMvc.perform(get("/images/0")).andExpect(status().isOk());
+	}
+
+	@Test
+	@Order(9)
+	public void getImageWithWrongAlgorithmShouldReturnBedRequest() throws Exception {
+		this.mockMvc.perform(get("/images/0?algorithm=salut")).andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@Order(10)
+	public void getImageWithAlgorithmWithWrongParamShouldReturnBedRequest() throws Exception {
+		this.mockMvc.perform(get("/images/0?algorithm=contrast&p1=50")).andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@Order(11)
+	public void getImageWithAlgorithmWithUnvalidParamShouldReturnBedRequest() throws Exception {
+		this.mockMvc.perform(get("/images/0?algorithm=brightness&p1=500")).andExpect(status().isBadRequest());
+	}
+
+	@Test
+	@Order(12)
+	public void getImageWithAlgorithmWithWrongIdShouldReturnNotFound() throws Exception {
+		this.mockMvc.perform(get("/images/50000?algorithm=contrast")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	@Order(13)
+	public void getImageWithAlgorithmWithArgShouldReturnSuccess() throws Exception {
+		this.mockMvc.perform(get("/images/0?algorithm=brightness&p1=50")).andExpect(status().isOk());
+	}
+
+	@Test
+	@Order(14)
+	public void deleteImageShouldReturnSuccess() throws Exception {
+		this.mockMvc.perform(delete("/images/0")).andExpect(status().isOk());
+	}
+
+
 }
