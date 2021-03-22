@@ -405,4 +405,70 @@ public class Color {
 			}
 		}
 	}
+
+	//https://perso.esiee.fr/~perretb/I5FM/TAI/convolution/index.html
+	public static void contour(final Img<UnsignedByteType> input) {
+		final RandomAccess<UnsignedByteType> rIn = input.randomAccess();
+	
+		final int iw = (int) input.max(0);
+		final int ih = (int) input.max(1);
+		final int ic = (int) input.max(2);
+	
+		int size = 3;
+		int res;
+		int somme;
+		int range = size/2;
+	
+		//f sur x
+		int[][] kernel = new int[][] {
+			{-1,0,1},
+			{-2,0,2},
+			{-1,0,1},
+		};
+	
+		//f sur y
+		// int[][] kernel = new int[][] {
+		//     { 1, 2, 1},
+		//     { 0, 0, 0},
+		//     {-1,-2,-1},
+		// };
+	
+		//f
+		// int[][] kernel = new int[][] {
+		//     {1,1,1},
+		//     {1,1,1},
+		//     {1,1,1},
+		// };
+	
+	
+		final IntervalView<UnsignedByteType> expandedView = Views.expandZero(input, range, range, 0);
+		final RandomAccess<UnsignedByteType> rExp = expandedView.randomAccess();
+		for(int c = 0; c < ic; c++){
+			for (int x = 0; x < iw; ++x) {
+				for (int y = 0; y < ih; ++y) {
+					rExp.setPosition(c, 2);
+	
+					res = 0;
+					somme = 0; //somme des coefs    
+					for(int u = -range; u <= range; u++){
+						for(int v = -range; v <= range; v++){
+							rExp.setPosition(x + u, 0);
+							rExp.setPosition(y + v, 1);
+	
+							final int coef = kernel[u + range][v + range];
+	
+							res += rExp.get().get() * coef;
+							somme += coef;
+						}
+					}
+					res = res/(size * size);
+					rIn.setPosition(x, 0);
+					rIn.setPosition(y, 1);
+					rIn.setPosition(c, 2);
+					rIn.get().set(res);
+				}
+			}
+		}
+	}
+	
 }
