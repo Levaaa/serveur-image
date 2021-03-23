@@ -93,11 +93,8 @@ public class ImageControllerTests {
 
 	@Test
 	@Order(8)
-	// public void getImageWithAlgorithmWithoutArgShouldReturnSuccess() throws Exception {
-	// 	this.mockMvc.perform(get("/images/0?algorithm=contrast")).andExpect(status().isOk());
-	// }
 	public void getImageWithAlgorithmWithoutArgShouldReturnSuccess() throws Exception {
-		this.mockMvc.perform(get("/images/0")).andExpect(status().isOk());
+		this.mockMvc.perform(get("/images/0?algorithm=contrast")).andExpect(status().isOk());
 	}
 
 	@Test
