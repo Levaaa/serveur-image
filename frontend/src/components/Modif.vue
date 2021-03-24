@@ -1,6 +1,5 @@
 <template>
   <div class="edit">
-
     <div class="imageResult">
       <img class="photo" :src="getUrl(selected)">
       <img class="initialPhoto" :src="getUrl(selected)" @click="exchangeImages()">
@@ -8,7 +7,6 @@
 
     <div class="tools">
       <h1>TOOLS</h1>
-
       <h2>{{effect.name}}</h2>
       <div v-if="effect.name === 'brightness' || effect.name === 'coloration' || effect.name === 'meanFilter'">
         <input type="range" :min="effect.min" :max="effect.max" :step="effect.step" v-model="value" 
@@ -27,7 +25,7 @@
     </div>
 
     <div>
-      <input type="button" class="button" value="save">
+      <input type="button" class="button" value="save" @click="getId()">
       <input type="button" class="button" value="download">
       <input type="button" class="button" value="reset">
 
@@ -62,6 +60,7 @@ export default {
       images: [],
       exchanged: false,
       errorMessage: false,
+      id: this.$route.query.id,
 
       selected: {
         name: null,
@@ -98,7 +97,12 @@ export default {
         .then((response) => {
           // JSON responses are automatically parsed.
           this.response = response.data;
-          this.selected.name = response.data[0].name;
+          if(this.id !== undefined){
+            this.selected.name = response.data[this.id].name;
+            this.selected.id = this.id;
+          } else {
+            this.selected.name = response.data[0].name;
+          }
         })
         .catch((e) => {
           this.errors.push(e);
