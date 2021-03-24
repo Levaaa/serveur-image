@@ -82,7 +82,7 @@ public class ImageController {
               break;
             case "brightness":
               param = Integer.parseInt(p1);
-              if(param < 0 || param > 255)
+              if(param < -255 || param > 255)
                 return new ResponseEntity<>("Unvalid parameter.", HttpStatus.BAD_REQUEST);
               
               Color.brightness(input, param);
@@ -194,6 +194,32 @@ public class ImageController {
 
       nodes.add(node);
     }
+    return nodes;
+  }
+
+  @RequestMapping(value = "/images/{id}/get", method = RequestMethod.GET, produces = "application/json; charset=UTF-8")
+  @ResponseBody
+  public ArrayNode getImageMeta(@PathVariable("id") long id){
+    ArrayNode nodes = mapper.createArrayNode();
+    Optional<Image> image = imageDao.retrieve(id);
+    
+    ObjectNode node = mapper.createObjectNode();
+    SCIFIOImgPlus<UnsignedByteType> input;
+    try{
+      input = ImageConverter.imageFromJPEGBytes(image.get().getData());
+    } catch (Exception e) {
+      return null;
+    }
+    final int iw = (int) input.max(0) + 1;
+		final int ih = (int) input.max(1) + 1;
+		final int ic = (int) input.max(2) + 1;
+    String size = iw + "*" + ih + "*" + ic;
+    
+    node.put("name", image.get().getName());
+    node.put("id", image.get().getId());  
+    node.put("type", image.get().getType());
+    node.put("size", size);
+    nodes.add(node);
     return nodes;
   }
 

@@ -30,9 +30,12 @@
     <button v-on:click="show = !show;" class="Search__button" >Display Gallery</button><br><br>
     <div class="grid-container" v-if="show">
       <div v-for="item in response" v-bind:key="item.id">
-
-        <img class="div-img" v-bind:src="'/images/' + item.id" v-bind:alt="item.name">
-
+        <div class="test">
+          <a href="/edit">
+            <img class="div-img" v-bind:src="'/images/' + item.id" v-bind:alt="item.name">
+          </a>
+          <span class="tooltip" >{{ meta[item.id] }}</span>
+        </div>
       </div>
     </div>
       
@@ -77,7 +80,8 @@ body {
 }
 .div-img{
   width: 150px;
-  margin: 0 1.5rem 1.5rem 0;
+  margin: 10px 0 0 0;
+  /* margin: 0 1.5rem 1.5rem 0; */
   display: inline-block;
   width: 100%;
   border: solid 4px black;
@@ -86,6 +90,16 @@ body {
   border-radius: 5px;
   transition: all .25s ease-in-out;
   
+}
+
+.test:hover .tooltip{
+    visibility: visible;
+}
+
+.test .tooltip{
+  visibility: hidden;
+  width: 5%;
+  text-align: center;
 }
 
 

@@ -8,6 +8,8 @@
 
     <div class="tools">
       <h1>TOOLS</h1>
+
+      <h2>{{effect.name}}</h2>
       <div v-if="effect.name === 'brightness' || effect.name === 'coloration' || effect.name === 'meanFilter'">
         <input type="range" :min="effect.min" :max="effect.max" :step="effect.step" v-model="value" 
         class="slider" v-on:change="applyEffect(selected, effect)" v-on:input="effect.param = value">
@@ -36,14 +38,12 @@
       </select>
 
       <select name="selecteurEffet" class="button" v-model="effect">
-      <!-- <select name="selecteurEffet" class="button" v-model="effect" @click="applyEffect(selected, effect); callRestService()"> -->
         <option v-bind:value="{name: item.name, param: item.param, min: item.min, max: item.max, step: item.step}" 
         v-bind:key="item" v-for="item in name">
           {{ item.name }}
         </option>
       </select>
     </div>
-
     <br>
   </div>
 </template>
@@ -98,6 +98,7 @@ export default {
         .then((response) => {
           // JSON responses are automatically parsed.
           this.response = response.data;
+          this.selected.name = response.data[0].name;
         })
         .catch((e) => {
           this.errors.push(e);
