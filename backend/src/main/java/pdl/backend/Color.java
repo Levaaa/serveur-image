@@ -457,4 +457,64 @@ public class Color {
 		}
 		return res;
 	}
+
+	public static void gauss(final Img<UnsignedByteType> input, int gauss) {
+		int size = 2 * ((int) (gauss)) + 1;
+		int range = (int) size/2;
+		long[][] kernel = generateKernel(gauss);
+		int sommeCoef = 0;
+		long coef;
+
+		for(int i = 0; i < size; i++){
+			for (int j = 0; j < size; j++) {
+				sommeCoef += kernel[i][j];	
+			}
+		}
+
+		final RandomAccess<UnsignedByteType> r = input.randomAccess();
+		final IntervalView<UnsignedByteType> expandedView = Views.expandMirrorDouble(input, range, range, 0);
+		final RandomAccess<UnsignedByteType> rEXP = expandedView.randomAccess();
+		final int iw = (int) input.max(0);
+		final int ih = (int) input.max(1);
+		final int ic = (int) input.max(2);
+		int res = 0;
+		for(int c = 0; c < ic; c++){
+			r.setPosition(c, 2);
+			rEXP.setPosition(c, 2);
+			for(int i = 0; i < iw; i++){
+				for(int j = 0; j < ih; j++){
+					r.setPosition(i, 0);
+					r.setPosition(j, 1);
+					for(int u = -range; u <= range; u++){
+						for(int v = -range; v <= range; v++){
+							rEXP.setPosition(i + u, 0);
+							rEXP.setPosition(j + v, 1);
+
+							coef = kernel[u+range][v+range];
+							res += rEXP.get().get() * coef;
+						}
+					}
+					res = res/(sommeCoef);
+					r.get().set(res);
+					
+					res = 0;
+				}
+			}
+		}
+	}
+
+	public static long[][] generateKernel(int gauss){
+		int size = 2 * ((int) (gauss)) + 1;
+		int range = (int) size/2;
+		long[][] kernel = new long[size][size];
+		double test = ((1/(2*Math.PI * Math.pow(gauss, 2))) * Math.exp(-((range * range) + (range * range))/(2 * gauss * gauss)));
+		double coef = 1 / test;
+		for(int i = -range; i <= range; i++){
+			for(int j = -range; j <= range; j++){
+				kernel[i + range][j + range] = Math.round(coef * (1/(2 * Math.PI * Math.pow(gauss, 2))) * 
+				Math.exp(-((i * i) + (j * j))/(2 * gauss * gauss)));
+			}
+		}
+		return kernel;
+	}
 }

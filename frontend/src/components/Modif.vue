@@ -8,7 +8,8 @@
     <div class="tools">
       <h1>TOOLS</h1>
       <h2>{{effect.name}}</h2>
-      <div v-if="effect.name === 'brightness' || effect.name === 'coloration' || effect.name === 'meanFilter'">
+      <div v-if="effect.name === 'brightness' || effect.name === 'coloration' || 
+      effect.name === 'meanFilter' || effect.name === 'gaussFilter'">
         <input type="range" :min="effect.min" :max="effect.max" :step="effect.step" v-model="value" 
         class="slider" v-on:change="applyEffect(selected, effect)" v-on:input="effect.param = value">
         <br>
@@ -82,7 +83,8 @@ export default {
         {name: "toGrey"},
         {name: "coloration", param: 180, min: 0, max: 360, step: 1},
         {name: "meanFilter", param: 7, min: 1, max: 15, step: 2},
-        {name : "edges"}
+        {name : "edges"},
+        {name: "gaussFilter", param: 7, min: 1, max: 15, step: 2},
         ],
 
     };

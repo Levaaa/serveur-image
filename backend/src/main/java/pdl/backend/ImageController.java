@@ -115,6 +115,12 @@ public class ImageController {
                 return new ResponseEntity<>("Unwanted parameter.", HttpStatus.BAD_REQUEST);
               Color.edges(input);
               break;
+            case "gaussFilter":
+              param = Integer.parseInt(p1);
+              if(param < 0 || param > 15)
+                return new ResponseEntity<>("Unvalid parameter.", HttpStatus.BAD_REQUEST);
+              Color.gauss(input, param);
+              break;
             default :
               return new ResponseEntity<>("Unknown algorithm.", HttpStatus.BAD_REQUEST);
           }
