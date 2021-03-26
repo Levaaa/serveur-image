@@ -30,9 +30,12 @@
     <button v-on:click="show = !show;" class="Search__button" >Display Gallery</button><br><br>
     <div class="grid-container" v-if="show">
       <div v-for="item in response" v-bind:key="item.id">
-
-        <img class="div-img" v-bind:src="'/images/' + item.id" v-bind:alt="item.name">
-
+        <div class="meta">
+          <router-link :to="{path: '/edit', query: {id: item.id}}">
+            <img class="div-img" v-bind:src="'/images/' + item.id" v-bind:alt="item.name">
+          </router-link>
+          <span class="tooltip" >{{ meta[item.id] }}</span>
+        </div>
       </div>
     </div>
       
@@ -75,17 +78,30 @@ body {
   width: 90%;
   margin: 0 auto;
 }
+.meta{
+  display: inline-block;
+  
+}
+
 .div-img{
   width: 150px;
-  margin: 0 1.5rem 1.5rem 0;
-  display: inline-block;
   width: 100%;
+  margin: 10px 0 0 0;
   border: solid 4px black;
   padding: 5px;
   box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
   border-radius: 5px;
   transition: all .25s ease-in-out;
   
+}
+
+.meta:hover .tooltip{
+    visibility: visible;
+}
+
+.meta .tooltip{
+  visibility: hidden;
+  text-align: center;
 }
 
 

@@ -11,6 +11,7 @@ export default {
       errors: [],
       file: '',
       images: [],
+      meta: [],
 
       selected: {
         name: null,
@@ -20,6 +21,7 @@ export default {
   },
   mounted() {
     this.callRestService();
+    this.getMeta();
     },
   
   methods: {
@@ -29,7 +31,36 @@ export default {
         .then((response) => {
           // JSON responses are automatically parsed.
           this.response = response.data;
-          console.log(this.response.length);
+          this.selected.name = response.data[0].name;
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
+        this.addImageMeta();
+    },
+
+    
+    addImageMeta(){
+      const id = this.response.length;
+      var imageUrl = "/images/" + id + "/get";
+
+      axios
+        .get(imageUrl)
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          this.meta[id] = response.data;
+        })
+        .catch((e) => {
+          this.errors.push(e);
+        });
+    },
+
+    getMeta(){
+      axios
+        .get(`images`)
+        .then((response) => {
+          // JSON responses are automatically parsed.
+          this.meta = response.data;
         })
         .catch((e) => {
           this.errors.push(e);

@@ -1,6 +1,5 @@
 <template>
   <div class="edit">
-
     <div class="imageResult">
       <img class="photo" :src="getUrl(selected)">
       <img class="initialPhoto" :src="getUrl(selected)" @click="exchangeImages()">
@@ -8,7 +7,9 @@
 
     <div class="tools">
       <h1>TOOLS</h1>
-      <div v-if="effect.name === 'brightness' || effect.name === 'coloration' || effect.name === 'meanFilter'">
+      <h2>{{effect.name}}</h2>
+      <div v-if="effect.name === 'brightness' || effect.name === 'coloration' || 
+      effect.name === 'meanFilter' || effect.name === 'gaussFilter'">
         <input type="range" :min="effect.min" :max="effect.max" :step="effect.step" v-model="value" 
         class="slider" v-on:change="applyEffect(selected, effect)" v-on:input="effect.param = value">
         <br>
@@ -25,7 +26,7 @@
     </div>
 
     <div>
-      <input type="button" class="button" value="save">
+      <input type="button" class="button" value="save" @click="getId()">
       <input type="button" class="button" value="download">
       <input type="button" class="button" value="reset">
 
@@ -36,14 +37,12 @@
       </select>
 
       <select name="selecteurEffet" class="button" v-model="effect">
-      <!-- <select name="selecteurEffet" class="button" v-model="effect" @click="applyEffect(selected, effect); callRestService()"> -->
         <option v-bind:value="{name: item.name, param: item.param, min: item.min, max: item.max, step: item.step}" 
         v-bind:key="item" v-for="item in name">
           {{ item.name }}
         </option>
       </select>
     </div>
-
     <br>
   </div>
 </template>
@@ -62,6 +61,7 @@ export default {
       images: [],
       exchanged: false,
       errorMessage: false,
+      id: this.$route.query.id,
 
       selected: {
         name: null,
@@ -83,7 +83,8 @@ export default {
         {name: "toGrey"},
         {name: "coloration", param: 180, min: 0, max: 360, step: 1},
         {name: "meanFilter", param: 7, min: 1, max: 15, step: 2},
-        {name : "edges"}
+        {name : "edges"},
+        {name: "gaussFilter", param: 7, min: 1, max: 15, step: 2},
         ],
 
     };
@@ -98,6 +99,12 @@ export default {
         .then((response) => {
           // JSON responses are automatically parsed.
           this.response = response.data;
+          if(this.id !== undefined){
+            this.selected.name = response.data[this.id].name;
+            this.selected.id = this.id;
+          } else {
+            this.selected.name = response.data[0].name;
+          }
         })
         .catch((e) => {
           this.errors.push(e);

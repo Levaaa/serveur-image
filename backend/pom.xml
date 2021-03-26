@@ -46,6 +46,12 @@
 		    <version>0.41.0</version>
 			<type>jar</type>
 		</dependency>
+		
+		<!-- <dependency>
+			<groupId>net.imglib2</groupId>
+			<artifactId>imglib2-algorithm</artifactId>
+			<version>0.11.2</version>
+		</dependency> -->
 	</dependencies>
 
 	<build>
